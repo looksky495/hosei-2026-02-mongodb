@@ -19,6 +19,16 @@ async function main(){
     res.render(path.resolve(import.meta.dirname, "views/index.ejs"), { users: names });
   });
 
+  app.post("/api/user", express.json(), async (req, res) => {
+    const name = req.body.name;
+    if (!name || typeof name !== "string" || name.length >= 100){
+      res.status(400).send("Bad Request");
+      return;
+    }
+    await db.collection("user").insertOne({ name });
+    res.status(200).send("OK");
+  });
+
   app.listen(3000, () => {
     console.log("start listening");
   });
