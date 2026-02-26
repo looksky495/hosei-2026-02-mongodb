@@ -1,7 +1,7 @@
 import path from "node:path";
 import express from "express";
 import { MongoClient } from "mongodb";
-import { insertUser } from "./user";
+import { getUsers, insertUser } from "./user";
 
 const client = new MongoClient("mongodb://localhost:27017");
 const app = express();
@@ -15,8 +15,7 @@ async function main(){
   app.use("/static", express.static(path.join(import.meta.dirname, "public")));
 
   app.get("/", async (req, res) => {
-    const users = await db.collection("user").find().toArray();
-    const names = users.map(user => user.name);
+    const names = await getUsers(db);
     res.render(path.resolve(import.meta.dirname, "views/index.ejs"), { users: names });
   });
 

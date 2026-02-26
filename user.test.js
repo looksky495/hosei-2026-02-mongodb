@@ -1,6 +1,28 @@
 import { test } from "node:test";
 import assert from "node:assert";
-import { insertUser } from "./user.js";
+import { insertUser, getUsers } from "./user.js";
+
+test("getUsers", async t => {
+  const db = {
+    collection: () => {
+      return {
+        find: () => {
+          return {
+            toArray: async () => {
+              return [
+                { name: "Epsilon" },
+                { name: "Zeta" }
+              ];
+            }
+          };
+        }
+      };
+    }
+  };
+
+  const names = await getUsers(db);
+  assert.deepStrictEqual(names, ["Epsilon", "Zeta"], "");
+});
 
 test("insertUser（成功）", async t => {
   const insertOne = t.mock.fn();

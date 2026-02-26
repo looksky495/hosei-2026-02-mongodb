@@ -10,3 +10,12 @@ export async function insertUser(db, name) {
   await db.collection("user").insertOne({ name });
   return { status: 200, message: "OK" };
 }
+
+/**
+ * @param {import("mongodb").Db} db
+ * @returns {Promise<string[]>}
+ */
+export async function getUsers(db) {
+  const users = await db.collection("user").find().toArray();
+  return users.map(user => user.name);
+}
