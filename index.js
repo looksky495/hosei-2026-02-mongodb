@@ -1,6 +1,7 @@
 import path from "node:path";
 import express from "express";
 import { MongoClient } from "mongodb";
+import { insertUser } from "./user";
 
 const client = new MongoClient("mongodb://localhost:27017");
 const app = express();
@@ -21,12 +22,8 @@ async function main(){
 
   app.post("/api/user", express.json(), async (req, res) => {
     const name = req.body.name;
-    if (!name || typeof name !== "string" || name.length >= 100){
-      res.status(400).send("Bad Request");
-      return;
-    }
-    await db.collection("user").insertOne({ name });
-    res.status(200).send("OK");
+    const result = await insertUser(db, name);
+    res.status(result.status).send(result.message);
   });
 
   app.listen(3000, () => {
