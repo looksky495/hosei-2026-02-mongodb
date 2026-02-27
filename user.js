@@ -7,7 +7,13 @@ export async function insertUser(db, name) {
   if (!name || typeof name !== "string" || name.length >= 100) {
     return { status: 400, message: "Bad Request" };
   }
-  await db.collection("user").insertOne({ name });
+  try {
+    await db.collection("user").insertOne({ name });
+  } catch (error) {
+    console.error("\u001b[31m# DB Error\u001b[0m");
+    console.error(error);
+    return { status: 500, message: "Internal Server Error" };
+  }
   return { status: 200, message: "OK" };
 }
 
