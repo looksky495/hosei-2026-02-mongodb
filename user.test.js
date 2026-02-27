@@ -31,7 +31,7 @@ test("getUsers（DBエラー）", async t => {
         find: () => {
           return {
             toArray: async () => {
-              return [];
+              throw new Error("DB Error");
             }
           };
         }
