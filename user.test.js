@@ -31,7 +31,7 @@ test("getUsers（DBエラー）", async t => {
         find: () => {
           return {
             toArray: async () => {
-              throw new Error("DB Error");
+              return [];
             }
           };
         }
@@ -39,10 +39,14 @@ test("getUsers（DBエラー）", async t => {
     }
   };
 
-  assert.rejects(() => getUsers(db), {
-    name: "Error",
-    message: "DB Error"
-  }, "DB Error が発生する");
+  let count = 0;
+  try {
+    await getUsers(db);
+  } catch (error) {
+    count++;
+    assert.strictEqual(error.message, "DB Error", "エラーメッセージは DB Error");
+  }
+  assert.strictEqual(count, 1, "エラーが 1 度発生する");
 });
 
 test("insertUser（成功）", async t => {
